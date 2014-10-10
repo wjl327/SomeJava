@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+           http://www.springframework.org/schema/context     
+            http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/task
+			http://www.springframework.org/schema/task/spring-task-3.0.xsd
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-3.0.xsd ">
+            
+	<!--不能同时用两个“context:property-placeholder”？？    -->
+	<context:property-placeholder location="classpath:quartz.properties" ignore-unresolvable="true" />
+	
+	<!-- =========================================== job定义 begin =========================================== -->
+	<bean id="helloJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="helloTimer" />
+		</property>
+		<property name="targetMethod">
+			<value>run</value>
+		</property>
+	</bean>
+	<!-- =========================================== job定义 end =========================================== -->
+
+
+	<!-- =========================================== job触发时间定义 =========================================== -->
+	<bean id="helloJobCron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="helloJob" />
+		</property>
+		<property name="cronExpression">
+			<value>${hello_quartz}</value>
+		</property>
+	</bean>
+	<!-- =========================================== job触发时间定义 end =========================================== -->
+
+	<!-- =========================================== 管理触发器 begin =========================================== -->
+	<bean autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="helloJobCron" />
+			</list>
+		</property>
+	</bean>
+	<!-- =========================================== 管理触发器 end =========================================== -->
+
+</beans>            

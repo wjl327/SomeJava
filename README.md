@@ -12,6 +12,10 @@ SomeJava
 * Tomcat6 6版本是个经典，自己整理可以跑起来的Tomcat代码，阅读学习。
 * tomcat-work 是《How Tomcat Works》的代码，可惜是Jdk1.4的，也可以作为学习用。
 
+##简单定时器框架
+
+* timer 环境Spring、Quertz、Logger 定时调度项目框架。
+
 ###分布式小框架Demo
 
 * gh-soa  作为服务端
