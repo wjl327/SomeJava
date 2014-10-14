@@ -23,3 +23,8 @@ SomeJava
 * `gh-web`  作为客户端，通过hessian访问soa。
 <br>
 帮别人弄的一个框架Demo、基于maven构建、采用springMvc+springJdbc，特点是web层和service层分离，采用hessian实现远程交互，这样web和service可以分开部署，中间用代理服务器转发，实现一台web多个service节点提供服务。当做学习的Demo而已，其实想做这种淘宝的Dubbo才是不错的方案。
+
+###SpringMVC框架
+
+* `springmvc`  非web项目，但集成Jetty，可以通过Bootstrap直接跑起来提供web服务。Bootstrap相当于把web.xml文件代码话，所以可以用来学习springmvc，或者加深对“容器”和“Servlet(包括Filter、listener)”工作原理的理解。
+* `springmvc2` web项目demo，集成Mongodb，可以作为学习，或者拓展作为项目开发框架。 特别在里面说明了applicationContext和DispatcherServlet的关系，见web.xml文件。

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"  xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd 
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <description>mvc模块配置 </description>
+    
+    <!-- 扫描组件类 -->
+    <context:component-scan base-package="com.wjl" />
+    <!-- 默认的注解映射的支持 -->
+    <mvc:annotation-driven />
+    
+    <!-- Default ViewResolver -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    	<!-- <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>   -->
+    	<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+    </bean>
+    
+	<!-- 拦截器
+    <mvc:interceptors>
+    	<mvc:mapping path="/user/*" /> 
+		<bean class="com.wjl.inteceptor.MyInteceptor" />
+	</mvc:interceptors>	  
+	--> 
+	
+	<!-- 定义无Controller的path<->view直接映射 -->
+	<mvc:view-controller path="/" view-name="redirect:/index.jsp" />
+	
+	<!-- 对静态资源文件的访问  方案零，可以再web.xml里面配置，容器的默认defaultServlet -->
+	
+ 	<!-- 对静态资源文件的访问  方案一 （二选一）
+ 	<mvc:default-servlet-handler/>
+ 	 -->
+ 	
+ 	<!-- 对静态资源文件的访问  方案二 （二选一）
+	<mvc:resources mapping="/images/**" location="/images/" cache-period="31556926"/>
+	<mvc:resources mapping="/js/**" location="/js/" cache-period="31556926"/>
+	<mvc:resources mapping="/css/**" location="/css/" cache-period="31556926"/>
+	-->
+
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.springframework.validation.BindException">error/400</prop>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">error/403</prop>
+			</props>
+		</property>
+	</bean>
+	
+		<!-- 总错误处理
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView">  
+		 	<value>/error/error</value>
+		</property>
+		<property name="defaultStatusCode">  
+		 	<value>500</value>
+		</property>	
+		<property name="warnLogCategory">  
+		 	<value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver</value>
+		</property>	
+	</bean> 
+	-->
+
+</beans>
