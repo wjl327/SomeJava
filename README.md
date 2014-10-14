@@ -12,10 +12,6 @@ SomeJava
 * `Tomcat6`  6版本是个经典，自己整理可以跑起来的Tomcat代码，阅读学习。
 * `tomcat-work` 是《How Tomcat Works》的代码，可惜是Jdk1.4的，也可以作为学习用。
 
-###简单定时器框架
-
-* `timer` 环境Spring、Quertz、Logger 定时调度项目框架。
-
 ###分布式小框架Demo
 
 * `gh-soa`  作为服务端
@@ -23,6 +19,10 @@ SomeJava
 * `gh-web`  作为客户端，通过hessian访问soa。
 <br>
 帮别人弄的一个框架Demo、基于maven构建、采用springMvc+springJdbc，特点是web层和service层分离，采用hessian实现远程交互，这样web和service可以分开部署，中间用代理服务器转发，实现一台web多个service节点提供服务。当做学习的Demo而已，其实想做这种淘宝的Dubbo才是不错的方案。
+
+###Quartz定时器框架
+
+* `timer` 环境Spring、Quertz、Logger 定时调度项目框架。拓展：通过Web界面启停定时器。
 
 ###SpringMVC框架
 
@@ -34,3 +34,13 @@ SomeJava
 * `simple版`  直接通过Java使用Jetty提供服务。
 * `spring版`  整合到Spring框架，适合web服务的使用情况。
 * 以前抽取出来的Demo，有上传到Csdn，不过那个是非Maven版的。现在改成Maven项目整理到Github。另外，我建议快速开发webservice的时候可以考虑采用cxf，不用去了解细节；而如果要进行长期或深度开发，那建议去学一下wsdl协议相关、SoapUI测试、另外可以了解有wsdl2Java之类的工具。
+
+###ActiveMQ
+
+###Mina Netty
+
+###工具类 Weather Poi JFreechart JExcel
+
+###Mongodb Redis？HBase？
+
+###Solr？
