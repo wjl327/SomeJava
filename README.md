@@ -28,3 +28,9 @@ SomeJava
 
 * `springmvc`  非web项目，但集成Jetty，可以通过Bootstrap直接跑起来提供web服务。Bootstrap相当于把web.xml文件代码话，所以可以用来学习springmvc，或者加深对“容器”和“Servlet(包括Filter、listener)”工作原理的理解。
 * `springmvc2` web项目demo，集成Mongodb，可以作为学习，或者拓展作为项目开发框架。 特别在里面说明了applicationContext和DispatcherServlet的关系，见web.xml文件。
+
+###cxf的使用demo
+
+* `simple版`  直接通过Java使用Jetty提供服务。
+* `spring版`  整合到Spring框架，适合web服务的使用情况。
+* 以前抽取出来的Demo，有上传到Csdn，不过那个是非Maven版的。现在改成Maven项目整理到Github。另外，我建议快速开发webservice的时候可以考虑采用cxf，不用去了解细节；而如果要进行长期或深度开发，那建议去学一下wsdl协议相关、SoapUI测试、另外可以了解有wsdl2Java之类的工具。

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans  xmlns="http://www.springframework.org/schema/beans"  
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+        xmlns:jaxws="http://cxf.apache.org/jaxws"  
+        xsi:schemaLocation="    
+            http://www.springframework.org/schema/beans     
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+            http://cxf.apache.org/jaxws    
+            http://cxf.apache.org/schemas/jaxws.xsd">  
+    <!-- Import apache CXF bean definition 固定-->  
+    <import resource="classpath:META-INF/cxf/cxf.xml" />  
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />  
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />  
+      
+    <!-- services接口配置 -->  
+    <bean id="helloService" class="com.cxf.spring.server.impl.HelloServiceImpl" />  
+    <!-- CXF 配置WebServices的服务名及访问地址 -->  
+    <jaxws:server id="helloServiceServer" address="/HelloService"   
+            serviceClass="com.cxf.spring.server.IHelloService">  
+            <jaxws:serviceBean>  
+                <ref bean="helloService"/>  
+            </jaxws:serviceBean>  
+    </jaxws:server>  
+    
+    <!-- 
+    如果使用这个的话，在服务端代码里面使用的注解则是：
+    @WebService(endpointInterface="com.cxf.spring.server.impl.HelloServiceImpl")
+    
+    <jaxws:endpoint id="helloServices" address="/HelloService"   
+            implementorClass="com.cxf.spring.server.impl.HelloServiceImpl">
+        <jaxws:implementor>
+            <ref bean="helloService"/>
+        </jaxws:implementor>
+    </jaxws:endpoint>
+     -->
+</beans>
