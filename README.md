@@ -7,6 +7,7 @@ SomeJava
   - [分析ActiveMQ负载均衡](http://note.youdao.com/share/?id=5f987bcf03ec0ee0f8a38e0c0e09a00e&type=note)
   - [深入分析内存溢出，记录踩坑和填坑的过程](http://note.youdao.com/share/?id=10732f869f507a3602dedfd7d07348b5&type=note)
   - [你真的了解 context:annotation-config、context:component-scan、context:property-placeholder？](http://note.youdao.com/share/?id=285418606bfa7b8ec6fcd63e56ed9d9f&type=note)
+  - [理解线程锁概念](http://note.youdao.com/share/?id=1bd09890ea6d6bc2cfe59ac90332acf6&type=note)
 
 ###tomcat
 
