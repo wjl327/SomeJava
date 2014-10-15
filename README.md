@@ -36,11 +36,14 @@ SomeJava
 * `spring版`  整合到Spring框架，适合web服务的使用情况。
 * 以前抽取出来的Demo，有上传到Csdn，不过那个是非Maven版的。现在改成Maven项目整理到Github。另外，我建议快速开发webservice的时候可以考虑采用cxf，不用去了解细节；而如果要进行长期或深度开发，那建议去学一下wsdl协议相关、SoapUI测试、另外可以了解有wsdl2Java之类的工具。
 
-###ActiveMQ
+###ActiveMQ的使用demo mq项目
 
-###Mina Netty
+* `com.wjl.simple` 下面有两个Bootstrap都是完整例子，只依赖一个Jar包。包括从代码中启动MQ服务器、设置KahaDB、创建连接、Session、设置生产者和设置消费者。这种用法一般不用于生产环境，但是很适合用来了解MQ的原理。
+*
 
 ###工具类 Weather Poi JFreechart JExcel
+
+###Mina Netty
 
 ###Mongodb Redis？HBase？
 
