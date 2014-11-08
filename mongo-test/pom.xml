@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.wjl</groupId>
+  <artifactId>mongo-test</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>mongo-test</name>
+  
+  <dependencies>
+  	<dependency>
+	  	<groupId>org.mongodb</groupId>
+		<artifactId>mongo-java-driver</artifactId>
+		<version>2.12.4</version>
+  	</dependency>
+  	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.3.2</version>
+	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.10</version>
+  	</dependency>
+  </dependencies>
+</project>
