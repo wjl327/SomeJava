@@ -75,62 +75,90 @@ public class CRUDTest {
 			System.err.println(msg);
 	}
 	
+	/**
+	 * 无查询条件、无限制字段
+	 */
 	@Test
 	public void query_all_1(){
 		//数据结果集游标
 		DBCursor cur = message.find();
 		while(cur.hasNext()){
 			print(cur.next().toString());
+			//print((String)message.get("content"));
 		}
 	}
 	
+	/**
+	 * 无查询条件、但只查content字段
+	 */
 	@Test
 	public void query_all_2(){
-		//数据结果集游标
-		DBCursor cur = message.find();
+		BasicDBObject fields = new BasicDBObject(MSG_CONTENT, 1);
+		fields.put(MSG_ID, 0);
+		DBCursor cur = message.find(new BasicDBObject(), fields);
 		while(cur.hasNext()){
-			DBObject message = cur.next();
-			print((String)message.get("content"));
+			print(cur.next().toString());
 		}
 	}
 	
+	/**
+	 * 单条件查询   去掉该方法里面的注释即为多条件and查询
+	 */
 	@Test
 	public void query_by_name(){
 		DBObject condition = new BasicDBObject();
 		condition.put(MSG_NAME, "Mom");
-		//数据结果集游标
+		//condition.put(MSG_CONTENT, "See you.");
+		
 		DBCursor cur = message.find(condition);
 		while(cur.hasNext()){
 			print(cur.next().toString());
 		}
 	}
 	
+	/**
+	 * $in 查询
+	 */
 	@Test
-	public void query_by_id(){
-		DBObject condition = new BasicDBObject();
-		condition.put(MSG_ID, new ObjectId("545dfea32b3ba519ad9965f9"));
-		DBObject msg = message.findOne(condition);
-		System.out.println(msg);
+	public void query_by_in(){
+		DBObject condition = new BasicDBObject("$in", 
+				new String[]{"How do you do?","All right."});
+		DBCursor cur = message.find(new BasicDBObject("content", condition));
+		while(cur.hasNext()){
+			print(cur.next().toString());
+		}
 	}
 	
 	/**
-	 * $gte/$lte/$gt/$lt, 还有$in操作也类似。
+	 * $操作符规则： 
+	 *    条件符  $lt $gt 是放在内层的 <br/>
+	 *    更新器  $inc $set 是放在外层的 <br/>
 	 * 
-	 * 另外，多条件查询的时候可以用 $all $and $or
+	 * $gte/$lte/$gt/$lt/$in 都是内层
 	 */
 	@Test
 	public void query_gt_lt(){
-		//单条件查询
-//		DBObject condition = new BasicDBObject("age", new BasicDBObject("$gte", 18));
-//		DBCursor cur = message.find(condition);
-		
-		//多条件查询
-		DBObject condition1 = new BasicDBObject("age", new BasicDBObject("$gte", 18));
-		DBObject condition2 = new BasicDBObject("age", new BasicDBObject("$lte", 20));
+		DBObject condition = new BasicDBObject();
+		condition.put("$gte", 18);
+		condition.put("$lte", 20);
+		DBCursor cur = message.find(new BasicDBObject("age", condition));
+		while(cur.hasNext()){
+			print(cur.next().toString());
+		}
+	}
+	
+	/**
+	 * 多条件组合$and $or 
+	 */
+	@Test
+	public void query_and_or(){
+		DBObject condition1 = new BasicDBObject("age", 17);
+		DBObject condition2 = new BasicDBObject("age", 18);
 		BasicDBList conditions = new BasicDBList();
 		conditions.add(condition1);
 		conditions.add(condition2);
-		DBCursor cur = message.find(new BasicDBObject("$and", conditions));
+		DBCursor cur = message.find(new BasicDBObject("$or", conditions));
+		//DBCursor cur = message.find(new BasicDBObject("$and", conditions));
 		while(cur.hasNext()){
 			print(cur.next().toString());
 		}
@@ -172,7 +200,6 @@ public class CRUDTest {
 		DBObject condition = new BasicDBObject(MSG_ID, new ObjectId("545dfea32b3ba519ad9965f9"));
 		DBObject rst = new BasicDBObject(MSG_CONTENT, "wa ha ha...");
 		message.update(condition, rst);
-		query_by_id();
 	}
 	
 	@Test
@@ -208,6 +235,10 @@ public class CRUDTest {
 	}
 	
 	/**
+	 * $操作符规则： 
+	 *    条件符  $lt $gt 是放在内层的 <br/>
+	 *    更新器  $inc $set 是放在外层的 <br/>
+	 * 
 	 * 真正只更新一个字段：使用更新器 $set。
 	 * 
 	 * 同类使用的还有　：　　$unset可以删除字段。 
