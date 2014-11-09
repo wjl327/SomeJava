@@ -3,6 +3,8 @@ package com.wjl.crud;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -149,9 +151,9 @@ public class CRUDTest {
 	}
 	
 	/**
-	 * 查询并更新。
+	 * 查询并更新。  相比update，执行还是比较慢的，但它是原子操作！！！！
 	 * 返回的是更新前的文档。
-	 * 同理还有一个findAndRemove()!!
+	 * 同理还有一个findAndRemove()!!底层shell命令都是"findAndModify"
 	 */
 	@Test
 	public void findAndModify(){
@@ -179,7 +181,10 @@ public class CRUDTest {
 	}
 	
 	/**
+	 * upsert为true的情况。
 	 * 条件匹配不到的时候，插入数据。
+	 * 等同于先find，然后save/update。 
+	 * 不同的是，upsert是原子的。
 	 */
 	@Test
 	public void update_upsert(){
@@ -190,10 +195,11 @@ public class CRUDTest {
 	}
 	
 	/**
-	 * 只更新某个字段的办法！！
+	 * 只更新某个字段的办法！！ 可以用于整个对象比较多的更新。
+	 * 真正只更新一个字段的方法还是 update_field_2()。
 	 */
 	@Test
-	public void update_field(){
+	public void update_field_1(){
 		DBObject obj = message.findOne(
 				new BasicDBObject(MSG_NAME, "Jl.Wu"));
 		DBObject newObj = new BasicDBObject(obj.toMap());
@@ -201,6 +207,31 @@ public class CRUDTest {
 		message.update(obj, newObj);
 	}
 	
+	/**
+	 * 真正只更新一个字段：使用更新器 $set。
+	 * 
+	 * 同类使用的还有　：　　$unset可以删除字段。 
+	 * $inc 数值增加和修改 ； 运用场景：计数器。 
+	 * $push 增加数据到数组； 运用场景：往某个内容增加一条评论。  
+	 *      【注意：但数组很大的时候，$push修改器的性能就直线下降，那种情况下的设计最好是将内嵌数据抽出来做单独集合】
+	 * $addToSet 也用于数据；用法类似$push，但是可以避免重复。
+	 * $pop 数组"位置删除",可以从头和尾像出队一样删除
+	 * $pull 数组"匹配删除",删除指定的值
+	 *   
+	 */
+	@Test
+	public void update_field_2(){
+		DBObject finder = message.findOne(
+				new BasicDBObject("_id", new ObjectId("545dfea32b3ba519ad9965e0")));
+		DBObject updater = new BasicDBObject(
+				"$set", new BasicDBObject("content", "This good!!"));
+		message.update(finder, updater);
+	}
+	
+	/**
+	 * 驱动会将这个插入数据转换成BSON，数据库解析之后直接保存，是不会执行代码的。
+	 * 因此，Mongo没有注入攻击的危险。
+	 */
 	@Test
 	public void add(){
 		DBObject msg = new BasicDBObject(MSG_NAME, "Jl.Wu")
@@ -208,6 +239,26 @@ public class CRUDTest {
 		message.insert(msg);
 	}
 	
+	/**
+	 * 多条数据这样批量插入：只是单个TCP请求，减少了网络开销、每次请求头处理等开销，所以性能会更好。
+	 */
+	@Test
+	public void add_list(){
+		DBObject msg1 = new BasicDBObject(MSG_NAME, "Jl.Wu")
+			.append(MSG_CONTENT, "Let' go, guys! 1111");
+		DBObject msg2 = new BasicDBObject(MSG_NAME, "Jl.Wu")
+		.append(MSG_CONTENT, "Let' go, guys 2222!");
+		DBObject msg3 = new BasicDBObject(MSG_NAME, "Jl.Wu")
+		.append(MSG_CONTENT, "Let' go, guys! 3333");
+		List<DBObject> list = new ArrayList<DBObject>();
+		list.add(msg1); list.add(msg2); list.add(msg3);
+		message.insert(list);
+	}
+	
+	/**
+	 * 单个删除的时候，用remove就可以。 一般常见业务remove就可以了。。。。
+	 * 当要删除整个集合的时候，remove速度就有点慢了，可以直接drop，但是连索引都会drop掉。如果只是要删除表数据，那就要重建索引。
+	 */
 	@Test
 	public void delete_by_id(){
 		message.remove(new BasicDBObject(MSG_ID, new ObjectId("545dfea32b3ba519ad9965f9")));
