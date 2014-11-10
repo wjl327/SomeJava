@@ -45,7 +45,7 @@ SomeJava
 
 * `mongodb-test` 主要是java驱动对mongodb的大部分操作。包括：比较复杂的操作group和MapReduce等。
 
-###等待继续上传的
+###Netty项目
 
 ####工具相关 Weather Poi JFreechart JExcel
 
