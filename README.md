@@ -40,14 +40,17 @@ SomeJava
 ###ActiveMQ的使用demo mq项目
 
 * `com.wjl.simple` 下面有两个Bootstrap都是完整例子（不需要单独启动MQ服务器），只依赖一个Jar包。包括从代码中启动MQ服务器、设置KahaDB、创建连接、Session、设置生产者和设置消费者。这种用法一般不用于生产环境，但是很适合用来了解MQ的原理。
-*
 
-###等待继续上传的
+###Mongodb项目
+
+* `mongodb-test` 主要是java驱动对mongodb的大部分操作。包括：比较复杂的操作group和MapReduce等。
+
+###Netty项目
 
 ####工具相关 Weather Poi JFreechart JExcel
 
 ####Mina Netty
 
-####Mongodb Redis HBase
+#### Redis HBase
 
 ####Solr
