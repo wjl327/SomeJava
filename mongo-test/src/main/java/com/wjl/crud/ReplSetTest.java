@@ -9,6 +9,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
+import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 
 public class ReplSetTest {
@@ -23,6 +24,9 @@ public class ReplSetTest {
 		DB db = client.getDB("test");
 		DBCollection users = db.getCollection("users");
 		
+		//读操作从副本节点读取
+		users.setReadPreference(ReadPreference.secondary());
+        
 		users.insert(new BasicDBObject("id", 1).append("name", "xiaoMi"));
 		
 		DBCursor cursor = users.find();
