@@ -47,7 +47,7 @@ SomeJava
 
 ###Netty项目
 
-####工具相关 Weather Poi JFreechart JExcel
+####工具相关Weather Poi JFreechart JExcel
 
 ####Mina Netty
 
