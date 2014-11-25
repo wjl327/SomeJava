@@ -47,7 +47,7 @@ SomeJava
 
 ###Netty项目
 
-* `netty` 一些Demo代码。 
+* `netty-hello` 基于netty3.5.2版本的一些Demo代码，并附上nio的实现，可做对比。 
 
 ####工具相关Weather Poi JFreechart JExcel
 
