@@ -16,14 +16,16 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.util.Date;
 
 /**
- * hello Netty 5.0 客户端  没考虑读写半包 
- * 学习于《Netty权威指南》
+ * hello Netty5.0 
+ * 服务端  没考虑读写半包    -- 参考于《Netty权威指南》
  *
  */
 public class TimeServer {
 	
-	private void bind(int port) throws Exception {
-		//配置服务端的NIO线程组
+	private int port = 8000;
+	
+	private void service() throws Exception {
+		//配置服务端的NIO线程组，分主线程和工作线程
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 		try {
@@ -50,13 +52,14 @@ public class TimeServer {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		new TimeServer().bind(8000);
+		new TimeServer().service();
 	}
 	
 }
 
 class TimeServerHandler extends ChannelHandlerAdapter{
 
+	//服务端收到一个读事件的时候会触发该方法，读取客户端发来的命令
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws Exception {
 		ByteBuf buf = (ByteBuf)msg;
@@ -64,7 +67,16 @@ class TimeServerHandler extends ChannelHandlerAdapter{
 		buf.readBytes(req);
 		String body = new String(req, "UTF-8");
 		System.out.println("The time server receive order : " + body);
-		String currentTime = "QUERY TIME".equalsIgnoreCase(body)?new Date().toString():"BAD ORDER";
+		resend(ctx, body);
+	}
+
+	/**
+	 * 回复客户端
+	 * @param ctx
+	 * @param body
+	 */
+	private void resend(ChannelHandlerContext ctx, String body) {
+		String currentTime = "QUERY TIME".equalsIgnoreCase(body) ? new Date().toString():"BAD ORDER";
 		ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
 		ctx.write(resp);
 	}
@@ -77,6 +89,17 @@ class TimeServerHandler extends ChannelHandlerAdapter{
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 		ctx.flush();
 	}
+
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		System.out.printf("客户端[%s]连接上来了！\n", ctx.channel().remoteAddress());
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		System.out.printf("客户端[%s]关闭连接了！\n", ctx.channel().remoteAddress());
+	}
+
 	
 }
 

@@ -14,14 +14,17 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
- * hello Netty 5.0 客户端  没考虑读写半包 
- * 学习于《Netty权威指南》
+ * hello Netty5.0 
+ * 客户端  没考虑读写半包   -- 参考于《Netty权威指南》
  * 
  */
 public class TimeClient {
 	
-	private void bind(int port) throws Exception {
-		//配置服务端的NIO线程组
+	private String host = "localhost";
+	private int port = 8000;
+	
+	private void connect() throws Exception {
+		//配置服务端的NIO线程组，分主线程和工作线程
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
@@ -30,7 +33,7 @@ public class TimeClient {
 			 .option(ChannelOption.TCP_NODELAY, true)
 			 .handler(new ChildChannelHandler());
 			//绑定端口，同步等待成功
-			ChannelFuture f = b.connect("localhost", port).sync();
+			ChannelFuture f = b.connect(host, port).sync();
 			//等待服务端监听端口关闭
 			f.channel().closeFuture().sync();
 		} finally{
@@ -46,26 +49,25 @@ public class TimeClient {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		new TimeClient().bind(8000);
+		new TimeClient().connect();
 	}
 	
 }
 
 class TimeClientHandler extends ChannelHandlerAdapter{
 	
-	private final ByteBuf firstMessage;
-	
-	public TimeClientHandler(){
-		byte[] req = "QUERY TIME".getBytes();
-		firstMessage = Unpooled.buffer(req.length);
-		firstMessage.writeBytes(req);
-	}
-	
 	//客户端和服务端TCP链路建立成功后，Netty会调用该方法
+	//通过这个方法，给时间服务器发送一个指令查询指令"query time"
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		ctx.writeAndFlush(firstMessage); //发送指令
+//		1、通过ByteBuf缓冲区发送。
+		ByteBuf buf = Unpooled.buffer(); //初始化一个默认缓冲区大小为256
+		buf.writeBytes("query time".getBytes());
+		ctx.writeAndFlush(buf);
+//		2、测试直接发送字符串。  失败！！发送不了~~
+//		ctx.writeAndFlush("query time");
 	}
 
+	//客户端收到一个读事件的时候会触发该方法
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws Exception {
 		ByteBuf buf = (ByteBuf)msg;
@@ -73,6 +75,9 @@ class TimeClientHandler extends ChannelHandlerAdapter{
 		buf.readBytes(req);
 		String body = new String(req, "UTF-8");
 		System.out.println("Now is : " + body);
+		//结束
+		ctx.close();
+		System.exit(0);
 	}
 	
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
