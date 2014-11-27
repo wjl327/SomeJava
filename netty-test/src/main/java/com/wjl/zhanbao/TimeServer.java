@@ -16,14 +16,17 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.util.Date;
 
 /**
- * hello Netty 5.0 客户端  没考虑读写半包 
- * 学习于《Netty权威指南》
- *
+ * 通过时间服务器的例子，测试TCP粘包和拆包问题，也称“读半包、写半包”。  
+ * 这里演示了读写半包的问题，因此服务端并不会收到100个请求消息，通过counter可以看到只收到一两条。
+ * 
+ *                                    -- 参考于《Netty权威指南》
  */
 public class TimeServer {
 	
-	private void bind(int port) throws Exception {
-		//配置服务端的NIO线程组
+	private int port = 8000;
+	
+	private void service() throws Exception {
+		//配置服务端的NIO线程组，分主线程和工作线程
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 		try {
@@ -50,23 +53,33 @@ public class TimeServer {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		new TimeServer().bind(8000);
+		new TimeServer().service();
 	}
 	
 }
 
+/**
+ *	时间服务器 
+ *
+ */
 class TimeServerHandler extends ChannelHandlerAdapter{
 	
 	private int counter = 0;
 
+	//服务端收到一个读事件的时候会触发该方法
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws Exception {
-		ByteBuf buf = (ByteBuf)msg;
+		ByteBuf buf = (ByteBuf)msg;  //netty5.0 
 		byte[] req = new byte[buf.readableBytes()];
 		buf.readBytes(req);
 		String body = new String(req, "UTF-8")
 			.substring(0, req.length - System.getProperty("line.separator").length());
-		System.out.println("The time server receive order : " + body + " ; the counter is : " + ++counter);
+		System.out.println("时间服务器收到客户端指令:" + body + "; 这是第" + ++counter + "条指令");
+		resend(ctx, body);
+	}
+
+	//回复客户端
+	private void resend(ChannelHandlerContext ctx, String body) {
 		String currentTime = "QUERY TIME".equalsIgnoreCase(body)?new Date().toString():"BAD ORDER";
 		currentTime = currentTime + System.getProperty("line.separator");
 		ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
@@ -75,6 +88,7 @@ class TimeServerHandler extends ChannelHandlerAdapter{
 	
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 			throws Exception {
+		cause.toString();
 		ctx.close();
 	}
 
