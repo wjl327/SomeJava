@@ -16,7 +16,7 @@ import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 
 /**
- * 通过LineBasedFrameDecoder和StringDecoder解决TCP粘包和拆包问题，也称“读半包、写半包”问题。
+ * 通过LineBasedFrameDecoder(行解码器)和StringDecoder解决TCP粘包和拆包问题，也称“读半包、写半包”问题。
  * 现在客户端发送100个请求消息，服务端也会接收到100条请求并正确响应100个回复。
  * 
  *                                    -- 参考于《Netty权威指南》
