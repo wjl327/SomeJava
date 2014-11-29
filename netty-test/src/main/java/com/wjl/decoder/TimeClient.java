@@ -1,4 +1,4 @@
-package com.wjl.zhanbao;
+package com.wjl.decoder;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -16,6 +16,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 /**
  * 通过时间服务器的例子，测试TCP粘包和拆包问题，也称“读半包、写半包”。  
  * 这里演示了读写半包的问题，客户端发送100个请求消息，测试服务端是否收到100条并正确响应100个回复。
+ * 
+ * finish包下的两个类则是通过LineBasedFrameDecoder换行解码器来解决该问题的。
  * 
  *                                    -- 参考于《Netty权威指南》
  */
