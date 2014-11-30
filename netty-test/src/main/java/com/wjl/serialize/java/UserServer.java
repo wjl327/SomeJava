@@ -21,6 +21,12 @@ import java.util.HashMap;
 import com.wjl.serialize.vo.UserReq;
 import com.wjl.serialize.vo.UserResp;
 
+/**
+ * Netty使用Java原生序列化编解码的例子。 服务端。
+ * 
+ * @author jl.wu
+ *
+ */
 public class UserServer {
 	
 	private int port = 8000;

@@ -17,6 +17,12 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import com.wjl.serialize.vo.UserReq;
 import com.wjl.serialize.vo.UserResp;
 
+/**
+ * Netty使用Java原生序列化编解码的例子。 客户端。
+ * 
+ * @author jl.wu
+ *
+ */
 public class UserClient {
 	
 	private String host = "localhost";
