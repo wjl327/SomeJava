@@ -1,4 +1,4 @@
-package com.wjl.hello;
+package com.wjl.hello.tcp;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
