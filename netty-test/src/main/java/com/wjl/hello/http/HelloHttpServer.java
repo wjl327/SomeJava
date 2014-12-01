@@ -1,8 +1,5 @@
 package com.wjl.hello.http;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -26,6 +23,15 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.CharsetUtil;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Netty开发Http服务。
+ * 
+ */
 public class HelloHttpServer {
 	
 	private String host = "localhost";
@@ -85,14 +91,40 @@ public class HelloHttpServer {
 					String content = request.content().toString(CharsetUtil.UTF_8);
 					StringBuilder rst = new StringBuilder();
 					//解析参数列表
-					
-					//
+					Map<String, String> params = resolveParam(content);
+					//组装返回
+					rst.append("<html xmlns='http://www.w3.org/1999/xhtml' lang='zh-CN'><head><title>Your Page</title></head>");
+					rst.append("<body align=center ><h1>");
+					rst.append("Welcome to go home.Mr." + params.get("username"));
+					rst.append("</h1></body></html>");
 					resp(ctx, rst);
 				}
 				
 			}
 		}
 
+		/**
+		 * 解析POST参数 比较粗糙 
+		 * @param content
+		 * @return
+		 */
+		private Map<String, String> resolveParam(String content) {
+			Map<String, String> rst = new HashMap<String, String>();
+			if(content == null || content.trim().equals(""))
+				return rst;
+			String[] list = content.split("&");
+			for(String param : list){
+				String[] kw = param.split("=");
+				rst.put(kw[0], kw[1]);
+			}
+			return rst;
+		}
+
+		/**
+		 * 发送响应结果
+		 * @param ctx
+		 * @param rst
+		 */
 		private void resp(ChannelHandlerContext ctx, StringBuilder rst) {
 			FullHttpResponse response = new DefaultFullHttpResponse(
 					HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
