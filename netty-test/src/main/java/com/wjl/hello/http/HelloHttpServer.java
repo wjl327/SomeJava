@@ -66,6 +66,9 @@ public class HelloHttpServer {
 		}
 	}
 	
+	/**
+	 * 简单的业务，一个首页，一个提交之后的页面。没做html参数解码，所以不支持表单提交中文
+	 */
 	private static class HelloHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 		@Override
 		protected void messageReceived(ChannelHandlerContext ctx,
@@ -95,7 +98,12 @@ public class HelloHttpServer {
 					//组装返回
 					rst.append("<html xmlns='http://www.w3.org/1999/xhtml' lang='zh-CN'><head><title>Your Page</title></head>");
 					rst.append("<body align=center ><h1>");
-					rst.append("Welcome to go home.Mr." + params.get("username"));
+					rst.append("Welcome to go home."); 
+					if(params.get("sex")!=null && params.get("sex").equals("female"))
+						rst.append("Mrs.");
+					else
+						rst.append("Mr.");
+					rst.append(params.get("username"));
 					rst.append("</h1></body></html>");
 					resp(ctx, rst);
 				}
