@@ -47,11 +47,12 @@ SomeJava
 
 ###Netty项目
 
-* `netty-hello` 基于netty3.5.2版本的一些Demo代码，并附上nio的实现，可做对比。 
+* `netty-hello`基于netty3.x版本的入门代码，项目里分netty和nio分别实现echoServer的业务。可做对比，明白选择Netty的好处
+* `netty-test`基于netty5.x版本的入门实用代码，大部分参考《Netty权威指南》。注:由于Netty4之后对整个项目进行分包，因此比Netty3入门相对难一点。当然，常用大部分功能还是在netty-all包下。
 
 ####工具相关Weather Poi JFreechart JExcel
 
-####Mina Netty
+####Mina
 
 #### Redis HBase
 
