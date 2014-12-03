@@ -25,6 +25,7 @@ import io.netty.util.CharsetUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +50,6 @@ public class HelloHttpServer {
 					ch.pipeline().addLast("http-decoder", new HttpRequestDecoder());//Http请求解码器
 					ch.pipeline().addLast("http-aggregator", new HttpObjectAggregator(65536));//将多个消息转换成FullHttpRequest或FullHttpResponse对象
 					ch.pipeline().addLast("http-encoder", new HttpResponseEncoder());//Http响应编码器
-					ch.pipeline().addLast("http-chunked", new ChunkedWriteHandler()); //支持异步发送大的文件流，且不会占过多内存 
 					ch.pipeline().addLast("http-server-handler", new HelloHttpServerHandler());
 				}
 			});
@@ -67,7 +67,7 @@ public class HelloHttpServer {
 	}
 	
 	/**
-	 * 简单的业务，一个首页，一个提交之后的页面。没做html参数解码，所以不支持表单提交中文
+	 * 简单的业务，一个首页，一个提交之后的页面。
 	 */
 	private static class HelloHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 		@Override
@@ -103,7 +103,7 @@ public class HelloHttpServer {
 						rst.append("Mrs.");
 					else
 						rst.append("Mr.");
-					rst.append(params.get("username"));
+					rst.append(URLDecoder.decode(params.get("username"), "UTF-8"));
 					rst.append("</h1></body></html>");
 					resp(ctx, rst);
 				}
