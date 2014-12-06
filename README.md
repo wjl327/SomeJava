@@ -48,12 +48,16 @@ SomeJava
 ###Netty项目
 
 * `netty-hello`基于netty3.x版本的入门代码，项目里分netty和nio分别实现echoServer的业务。可做对比，明白选择Netty的好处
-* `netty-test`基于netty5.x版本的入门实用代码，大部分参考《Netty权威指南》。注:由于Netty4之后对整个项目进行分包，因此比Netty3入门相对难一点。当然5.x也延续4.x的分包，但常用大部分功能还是在netty-all包下。[Netty3和4的区别](http://www.oschina.net/translate/netty-4-0-new-and-noteworthy?print)
+* `netty-test`基于netty5.x版本的入门实用代码，大部分参考《Netty权威指南》。注:由于Netty4之后对整个项目进行分包，因此比Netty3入门相对难一点。当然5.x也延续4.x的分包，但常用大部分功能还是在netty-all包下。[Netty3和4的区别](http://www.oschina.net/translate/netty-4-0-new-and-noteworthy?print)。还有Netty+protobuf的Demo。
+
+###Netty-thrift
 
 ####工具相关Weather Poi JFreechart JExcel
 
-####Mina
+#### Mina
 
-#### Redis HBase
+#### Redis 
+
+#### HBase
 
 ####Solr
