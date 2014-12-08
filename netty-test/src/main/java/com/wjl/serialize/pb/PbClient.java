@@ -2,6 +2,7 @@ package com.wjl.serialize.pb;
 
 import java.net.Socket;
 
+import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 
 /**
@@ -23,6 +24,13 @@ public class PbClient {
 		cos.writeInt32NoTag(reqData.length);
 		cos.writeRawBytes(reqData);
 		cos.flush();
+		
+		CodedInputStream cis = CodedInputStream.newInstance(socket.getInputStream());
+		int len = cis.readInt32();
+		HelloProto.HelloRes res = HelloProto.HelloRes.parseFrom(cis.readRawBytes(len));
+		System.out.println(res.getRst());
+		
+		socket.close();
 	}
 
 }
