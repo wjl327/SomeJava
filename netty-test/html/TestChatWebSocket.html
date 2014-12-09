@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<br>
+<body>
+	<br>
+	<script type="text/javascript">
+		var socket;
+		var username;
+		
+		function connect(){
+			username = document.getElementById('username').value;
+			if (!window.WebSocket) {
+				window.WebSocket = window.MozWebSocket;
+			}
+			if (window.WebSocket) {
+				socket = new WebSocket("ws://192.168.1.102:8080/chat");
+				socket.onmessage = function(event) {
+					var ta = document.getElementById('responseText');
+					ta.value = ta.value + event.data + '\n';
+					ta.scrollTop = ta.scrollHeight;
+				};
+				socket.onopen = function(event) {
+					document.getElementById("tips").innerHTML = "已登录!";
+					document.getElementById("btn1").disabled = "disabled";
+				};
+				socket.onclose = function(event) {
+					document.getElementById("tips").innerHTML = "服务器已关闭!";
+				};
+			} else {
+				document.getElementById("tips").innerHTML = "抱歉，您的浏览器不支持WebSocket协议!";
+			}
+		}
+
+		function send(message) {
+			if (!window.WebSocket) {
+				return;
+			}
+			if (socket.readyState == WebSocket.OPEN) {
+				socket.send(username+'说:'+message);
+			} else {
+				document.getElementById("tips").innerHTML = "WebSocket连接没有建立成功!";
+			}
+		}
+
+		function tosend(message){
+			send(message);
+			document.getElementById("message").innerHTML = "";
+		}
+	</script>
+	<input type="text" id="username" value="输入你的名字" onclick="this.value=''" /> 
+	<input type="button" id="btn1" value="登陆" onclick="javascript:connect();" />
+	<br>
+	<br>
+	<hr color="blue" />
+	<h3 id="tips">未登录</h3>
+	<textarea id="responseText" style="width: 500px; height: 300px;" >
+	</textarea>
+	<br />
+	<form onsubmit="return false;">
+		<input type="text" name="message"  style="width:450px;" /> 
+		<input type="button" value="发送" onclick="tosend(this.form.message.value)" />
+	</form>
+</body>
+</html>
