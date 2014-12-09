@@ -36,6 +36,8 @@ import io.netty.util.CharsetUtil;
  * 网上找的Netty权威指南代码的例子
  * 基于5.x版本的简单的Websocket服务器，接收页面的请求然后应答。
  * 通讯模式：前端推-后端响应。
+ * 
+ * 对应测试html：  html/TestHelloWebSocket.html
  *
  */
 public class HelloWebSocketServer {
@@ -111,7 +113,7 @@ class HelloWebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
 		// 返回应答消息
 		String request = ((TextWebSocketFrame) frame).text();
-		ctx.channel().write(new TextWebSocketFrame(request + " , 欢迎使用Netty WebSocket服务，现在时刻：" + new java.util.Date().toString()));
+		ctx.channel().writeAndFlush(new TextWebSocketFrame(request + " , 欢迎使用Netty WebSocket服务，现在时刻：" + new java.util.Date().toString()));
 
 	}
 
