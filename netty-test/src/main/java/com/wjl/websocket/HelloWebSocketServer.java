@@ -71,9 +71,9 @@ class HelloWebSocketInitializer extends ChannelInitializer<SocketChannel> {
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
-		pipeline.addLast("http-codec", new HttpServerCodec());
-		pipeline.addLast("aggregator", new HttpObjectAggregator(65536));
-		pipeline.addLast("http-chunked", new ChunkedWriteHandler());
+		pipeline.addLast("http-codec", new HttpServerCodec()); //http对象编码解码器
+		pipeline.addLast("aggregator", new HttpObjectAggregator(65536)); //将多个http对象合并成FullHttpRequest
+		pipeline.addLast("http-chunked", new ChunkedWriteHandler());//用于websocket
 		pipeline.addLast("handler", new WebSocketServerHandler());
 	}
 

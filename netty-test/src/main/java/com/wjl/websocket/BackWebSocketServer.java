@@ -22,7 +22,11 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.handler.stream.ChunkedWriteHandler;
@@ -60,6 +64,7 @@ public class BackWebSocketServer {
 }
 
 class BackWebSocketInitializer extends ChannelInitializer<SocketChannel> {
+
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
@@ -74,12 +79,16 @@ class BackWebSocketInitializer extends ChannelInitializer<SocketChannel> {
 class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
 	private WebSocketServerHandshaker handshaker;
-	
+
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, Object msg) throws Exception {
 		// 传统的HTTP接入
 		if (msg instanceof FullHttpRequest) {
 			handleHttpRequest(ctx, (FullHttpRequest) msg);
+		}
+		// WebSocket接入
+		else if (msg instanceof WebSocketFrame) {
+			handleWebSocketFrame(ctx, (WebSocketFrame) msg);
 		}
 	}
 
@@ -98,8 +107,8 @@ class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 		} else {
 			handshaker.handshake(ctx.channel(), req);
 		}
-		
-		for(int i = 1; i < 10; i++){
+
+		for (int i = 1; i < 10; i++) {
 			ctx.channel().writeAndFlush(new TextWebSocketFrame("你有新短消息，id为：" + i));
 			try {
 				TimeUnit.SECONDS.sleep(1);
@@ -110,6 +119,19 @@ class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
 	}
 	
+	private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+		// 判断是否是关闭链路的指令
+		if (frame instanceof CloseWebSocketFrame) {
+			handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
+			return;
+		}
+		// 判断是否是Ping消息
+		if (frame instanceof PingWebSocketFrame) {
+			ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
+			return;
+		}
+	}
+
 	private static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
 		// 返回应答给客户端
 		if (res.getStatus().code() != 200) {

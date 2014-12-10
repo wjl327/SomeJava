@@ -16,7 +16,7 @@
 				window.WebSocket = window.MozWebSocket;
 			}
 			if (window.WebSocket) {
-				socket = new WebSocket("ws://192.168.1.102:8080/chat");
+				socket = new WebSocket("ws://localhost:8080/chat");
 				socket.onmessage = function(event) {
 					var ta = document.getElementById('responseText');
 					ta.value = ta.value + event.data + '\n';
