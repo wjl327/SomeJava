@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 简单改造成聊天服务器。
+ * 简单改造成群聊服务器。
  * 测试html：html/TestChatWebSocket.html
  */
 public class ChatWebSocketServer {
@@ -80,7 +80,9 @@ class ChatWebSocketInitializer extends ChannelInitializer<SocketChannel> {
 }
 
 class ChatWebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
-
+	
+	private int port = 8080;
+	private String host = "localhost"; //群聊要设置为机器的局域网ip
 	private WebSocketServerHandshaker handshaker;
 	
 	@Override
@@ -125,7 +127,7 @@ class ChatWebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 		}
 
 		// 构造握手响应返回，本机测试
-		WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory("ws://192.168.1.102:8080/chat", null, false);
+		WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory("ws://"+host+":"+port+"/chat", null, false);
 		handshaker = wsFactory.newHandshaker(req);
 		if (handshaker == null) {
 			WebSocketServerHandshakerFactory.sendUnsupportedWebSocketVersionResponse(ctx.channel());
