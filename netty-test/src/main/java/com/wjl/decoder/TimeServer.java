@@ -16,11 +16,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.util.Date;
 
 /**
- * 通过时间服务器的例子，测试TCP粘包和拆包问题，也称“读半包、写半包”。  
+ * 这是暂时错误例子：通过时间服务器的例子，测试TCP粘包和拆包问题，也称“读半包、写半包”。  
  * 这里演示了读写半包的问题，因此服务端并不会收到100个请求消息，通过counter可以看到只收到一两条。
  * 
  * finish包下的两个类则是通过LineBasedFrameDecoder换行解码器来解决该问题的。
- *  
+ * 另外通过FixedLengthFrameDecoder和DelimiterBasedFrameDecoder都可以解决问题。
+ * 
  *                                    -- 参考于《Netty权威指南》
  */
 public class TimeServer {
