@@ -2,6 +2,7 @@ package com.wjl.file;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -26,7 +27,7 @@ import java.io.FileInputStream;
  * netty-5.0.0.Alpha1版本的例子
  * https://github.com/netty/netty/blob/netty-5.0.0.Alpha1/example/src/main/java/io/netty/example/filetransfer/FileServer.java
  * 
- * 通过StringEncoder和LineBasedFrameDecoder来传输文件。
+ * 通过StringEncoder和LineBasedFrameDecoder编码解码字符串来传输文件内容。
  * 
  */
 public class FileServer1 {
@@ -47,7 +48,7 @@ public class FileServer1 {
 					ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8)); //支持ctx写字符串，不用读写ByteBuf  
 					ch.pipeline().addLast(new LineBasedFrameDecoder(8192)); //以换行符为结束标志的解码器
 					ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8)); //将接收到的对象转字符串
-					ch.pipeline().addLast(new StringServerHandler());
+					ch.pipeline().addLast(new FileServer1Handler());
 				}
 			 });
 			
@@ -68,7 +69,7 @@ public class FileServer1 {
 	
 }
 
-class StringServerHandler extends SimpleChannelInboundHandler<String>{
+class FileServer1Handler extends SimpleChannelInboundHandler<String>{
 
 	//必须换行符才LineBasedFrameDecoder才能解析成一行
 	private static final String CR = System.getProperty("line.separator");
@@ -79,15 +80,19 @@ class StringServerHandler extends SimpleChannelInboundHandler<String>{
 		String fileName = msg;
 		System.out.println("客户端请求的文件：" + fileName);
 		File file = new File("html/" + fileName);
+		
+		ChannelFuture cf = null;
+		
 		if(file.exists()){
 			FileInputStream fis = new FileInputStream(file);
 			FileRegion fileRegion = new DefaultFileRegion(fis.getChannel(), 0, file.length());
 			ctx.write(fileRegion);
-			ctx.writeAndFlush(CR);
+			cf = ctx.writeAndFlush(CR);
 			fis.close();
 		}else{
-			ctx.writeAndFlush("File Not Found: " + fileName + CR);
+			cf = ctx.writeAndFlush("File Not Found: " + fileName + CR);
 		}
+		cf.addListener(ChannelFutureListener.CLOSE); //异步监听器：发送结束的时候关闭channel，即关闭与客户端的链接。
 	}
 	
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) 

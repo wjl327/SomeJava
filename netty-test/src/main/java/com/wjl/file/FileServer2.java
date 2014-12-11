@@ -29,7 +29,7 @@ import java.io.RandomAccessFile;
  * 参考netty官方主线分支的例子，简化去掉ssl的情况。 
  * https://github.com/netty/netty/blob/master/example/src/main/java/io/netty/example/file/FileServer.java
  * 
- * 通过StringEncoder和LineBasedFrameDecoder来传输文件。
+ * 通过StringEncoder和LineBasedFrameDecoder编码解码字符串来传输文件内容。
  * 
  */
 public class FileServer2 {
@@ -53,7 +53,7 @@ public class FileServer2 {
                             new LineBasedFrameDecoder(8192),
                             new StringDecoder(CharsetUtil.UTF_8),
                             new ChunkedWriteHandler(),   //文件传输
-                            new FileServerHandler());
+                            new FileServer2Handler());
 				}
 			 });
 			ChannelFuture f = b.bind(port).sync();
@@ -71,14 +71,10 @@ public class FileServer2 {
 	
 }
 
-class FileServerHandler extends SimpleChannelInboundHandler<String>{
+class FileServer2Handler extends SimpleChannelInboundHandler<String>{
 	
 	private static final String CR = System.getProperty("line.separator");
 	
-	public void channelActive(ChannelHandlerContext ctx) {
-        ctx.writeAndFlush("HELO: Type the path of the file to retrieve.\n");
-    }
-
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg)
 			throws Exception {
@@ -97,6 +93,7 @@ class FileServerHandler extends SimpleChannelInboundHandler<String>{
                 raf.close();
             }
         }
+        
         ctx.write("OK: The file length is : " + raf.length() + "." + CR);
         if (ctx.pipeline().get(SslHandler.class) == null) {
             //SSL没有启动。能使用零拷贝技术来进行文件传输。
@@ -105,9 +102,9 @@ class FileServerHandler extends SimpleChannelInboundHandler<String>{
             //启动了SSL。不能使用零拷贝技术来进行文件传输。
             ctx.write(new ChunkedFile(raf));
         }
-        ctx.writeAndFlush(CR);	
+        ChannelFuture cf = ctx.writeAndFlush(CR);
+        cf.addListener(ChannelFutureListener.CLOSE); //异步监听器：发送结束的时候关闭channel，即关闭与客户端的链接。
     }
-	
 	
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();

@@ -16,7 +16,7 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
 
 /**
- * 官方例子没提供客户端。自己写的。
+ * 官方没提供客户端例子。自己写的。其实就是简单接收字符串。
  * 
  * 文件客户端，可以用来测试FileServer1和FileServer2。
  * 通过StringDecoder和LineBasedFrameDecoder的组合一行行的接收字符串数据，并打印到控制台。
@@ -40,7 +40,7 @@ public class FileClient {
 					ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8)); //支持ctx写字符串，不用读写ByteBuf  
 					ch.pipeline().addLast(new LineBasedFrameDecoder(1024)); //以换行符为结束标志的解码器
 					ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8)); //将接收到的对象转字符串
-					ch.pipeline().addLast(new StringClientHandler());
+					ch.pipeline().addLast(new FileClientHandler());
 				}
 			 });
 			
@@ -58,7 +58,7 @@ public class FileClient {
 	
 }
 
-class StringClientHandler extends SimpleChannelInboundHandler<String>{
+class FileClientHandler extends SimpleChannelInboundHandler<String>{
 	
 	//必须换行符才LineBasedFrameDecoder才能解析成一行
 	private static final String CR = System.getProperty("line.separator");
