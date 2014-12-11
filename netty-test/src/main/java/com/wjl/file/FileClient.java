@@ -10,13 +10,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.CharsetUtil;
 
 /**
- * 非二进制的文件传输，只是通过字符串传输文件内容。
- * 通过StringEncoder和LineBasedFrameDecoder传输文件内容.
+ * 官方例子没提供客户端。自己写的。
+ * 
+ * 文件客户端，可以用来测试FileServer1和FileServer2。
+ * 通过StringDecoder和LineBasedFrameDecoder的组合一行行的接收字符串数据，并打印到控制台。
  * 
  */
 public class FileClient {
@@ -34,9 +37,10 @@ public class FileClient {
 			 .option(ChannelOption.TCP_NODELAY, true)
 			 .handler(new ChannelInitializer<SocketChannel>(){
 				protected void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline().addLast(new ChunkedWriteHandler()); //文件传输
 					ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8)); //支持ctx写字符串，不用读写ByteBuf  
-					ch.pipeline().addLast(new FileClientHandler());
+					ch.pipeline().addLast(new LineBasedFrameDecoder(1024)); //以换行符为结束标志的解码器
+					ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8)); //将接收到的对象转字符串
+					ch.pipeline().addLast(new StringClientHandler());
 				}
 			 });
 			
@@ -54,7 +58,7 @@ public class FileClient {
 	
 }
 
-class FileClientHandler extends SimpleChannelInboundHandler<HttpChunk>{
+class StringClientHandler extends SimpleChannelInboundHandler<String>{
 	
 	//必须换行符才LineBasedFrameDecoder才能解析成一行
 	private static final String CR = System.getProperty("line.separator");
