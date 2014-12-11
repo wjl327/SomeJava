@@ -28,7 +28,7 @@ public class BigFileServer {
 	
 	//传输文件
 	public static String FILENAME = "E:/developer/mongodb-linux-x86_64-2.6.5.gz";
-	private int port = 8080;
+	private int port = 8000;
 	
 	private void service() throws Exception {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
