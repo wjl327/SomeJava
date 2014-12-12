@@ -1,4 +1,4 @@
-Netty5.x版本的入门Demo。
+Netty3.x版本的入门Demo。
 阅读顺序：
 com.netty.hello包：了解服务端和客户端，建立连接，以及编写业务handler。
 com.netty.echo包：经典的echo例子。客户端可以通过控制台和服务端双向文本传输。
