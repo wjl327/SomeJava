@@ -3,27 +3,24 @@ package com.server.st;
 import java.net.InetSocketAddress;
 
 import org.apache.thrift.TMultiplexedProcessor;
-import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 
-import com.service.hello.HelloService;
-import com.service.hello.impl.HelloServiceImpl;
 import com.service.st.StudentService;
 import com.service.st.TeacherService;
 import com.service.st.impl.StudentServiceImpl;
 import com.service.st.impl.TeacherServiceImpl;
 
 /**
+ * Thrift-0.9.1版本之后解决了多接口服务，提供多路复用处理器TMultiplexedProcessor
  * 
- * 支持的数据传输协议:
- *
+ * thrift支持的数据传输协议:
  * TBinaryProtocol : 二进制格式. TCompactProtocol : 压缩格式. TJSONProtocol : JSON格式.
  * TSimpleJSONProtocol : 提供JSON只写协议, 生成的文件很容易通过脚本语言解析.
  * 
- * @author jl.wu
+ * @author Jarvis.Wu
  *
  */
 public class ThriftServer {
@@ -32,9 +29,9 @@ public class ThriftServer {
 
 	private void start() {
 		try {
-			//多接口处理器
+			//多路复用协议
 			TMultiplexedProcessor processor = new TMultiplexedProcessor();
-			processor.registerProcessor("TeacherService", new TeacherService.Processor < TeacherService.Iface > (new TeacherServiceImpl()));
+			processor.registerProcessor("TeacherService", new TeacherService.Processor<TeacherService.Iface>(new TeacherServiceImpl()));
 			processor.registerProcessor("StudentService", new StudentService.Processor<StudentService.Iface>(new StudentServiceImpl()));
 			TServerSocket serverSocket = new TServerSocket(new InetSocketAddress(PORT));
 			TServer.Args args = new TServer.Args(serverSocket);

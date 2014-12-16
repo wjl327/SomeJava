@@ -4,6 +4,12 @@ import org.apache.thrift.TException;
 
 import com.service.st.*;
 
+/**
+ * TeacherService服务实现类
+ * 
+ * @author Jarvis.Wu
+ *
+ */
 public class TeacherServiceImpl implements TeacherService.Iface{
 
 	@Override

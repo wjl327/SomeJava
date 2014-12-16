@@ -4,6 +4,12 @@ import org.apache.thrift.TException;
 
 import com.service.hello.HelloService;
 
+/**
+ * HelloService服务实现类
+ * 
+ * @author Jarvis.Wu
+ *
+ */
 public class HelloServiceImpl implements HelloService.Iface {
 
 	@Override
