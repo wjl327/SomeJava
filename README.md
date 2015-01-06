@@ -48,22 +48,23 @@ SomeJava
 ###Netty项目
 
 * `netty-3.x`基于netty3.x版本的入门代码，项目里分netty和nio分别实现echoServer的业务。可做对比，明白选择Netty的好处
-* `netty-5.x`基于netty5.x版本的入门实用代码，大部分参考《Netty权威指南》。注:由于Netty4之后对整个项目进行分包，因此比Netty3入门相对难一点。当然5.x也延续4.x的分包，但常用大部分功能还是在netty-all包下。[Netty3和4的区别](http://www.oschina.net/translate/netty-4-0-new-and-noteworthy?print)。还有Netty+protobuf的Demo。
-* netty-5.x 推荐阅读顺序：
-com.wjl.hello包：了解Netty服务端和客户端如何建立和关闭连接，以及编写业务handler，另外明白Netty异步操作结果监听。
-com.wjl.hello2包:通过连续发送100个字符串的方式，展示了TCP拆包和粘包的问题。
-com.wjl.hello3包：通过判断长度的方式解决TCP拆包和粘包的问题。顺便学习下如何自己写编解码器。
-com.wjl.decoder.fixedlen包：展示定长解码器的使用。
-com.wjl.decoder.line包：展示换行解码器的使用，通信时，默认带上回车换行表示一行结束。
-com.wjl.decoder.string包：展示通过字符串编解码器来解放对ByteBuf的操作。
-com.wjl.decoder.delimit包:展示可以指定字符的编解码器。补充的。
-com.wjl.http:了解Netty如何开发Http服务。
-com.wjl.file:参照官方的例子整理出来的对文件的操作和传输大文件时候使用ChunkedFile。
-com.wjl.serialize.java:了解Netty如何通过序列化传输对象。
-com.wjl.serialize.pb:了解Google ProtoBuf技术。
-com.wjl.serialize.protobuf:了解Netty如何通过Google Protobuf序列化传输对象。
-com.wjl.websocket:了解Netty跟html5如何通过websocket通讯。
-com.wjl.udp:了解Netty如何使用UDP。
+* `netty-5.x`基于netty5.x版本的入门实用代码，大部分参考《Netty权威指南》。注:由于Netty4之后对整个项目进行分包，因此比Netty3入门相对难一点。当然5.x也延续4.x的分包，但常用大部分功能还是在netty-all包下。[Netty3和4的区别](http://www.oschina.net/translate/netty-4-0-new-and-noteworthy?print)。还有Netty+protobuf的Demo。  <br />
+> ####netty-5.x 推荐阅读顺序
+
+>1.  com.wjl.hello包：了解Netty服务端和客户端如何建立和关闭连接，以及编写业务handler，另外明白Netty异步操作结果监听。
+>2.  com.wjl.hello2包:通过连续发送100个字符串的方式，展示了TCP拆包和粘包的问题。
+>3.  com.wjl.hello3包：通过判断长度的方式解决TCP拆包和粘包的问题。顺便学习下如何自己写编解码器。
+>4.  com.wjl.decoder.fixedlen包：展示定长解码器的使用。
+>5.  com.wjl.decoder.line包：展示换行解码器的使用，通信时，默认带上回车换行表示一行结束。
+>6.  com.wjl.decoder.string包：展示通过字符串编解码器来解放对ByteBuf的操作。
+>7.  com.wjl.decoder.delimit包:展示可以指定字符的编解码器。补充的。
+>8.  com.wjl.http:了解Netty如何开发Http服务。
+>9.  com.wjl.file:参照官方的例子整理出来的对文件的操作和传输大文件时候使用ChunkedFile。
+>10.  com.wjl.serialize.java:了解Netty如何通过序列化传输对象。
+>11.  com.wjl.serialize.pb:了解Google ProtoBuf技术。
+>12.  com.wjl.serialize.protobuf:了解Netty如何通过Google Protobuf序列化传输对象。
+>13.  com.wjl.websocket:了解Netty跟html5如何通过websocket通讯。
+>14.  com.wjl.udp:了解Netty如何使用UDP。
 
 ###Thrift项目
 
